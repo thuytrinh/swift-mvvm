@@ -1,6 +1,6 @@
 ---
 name: swift-mvvm
-description: Use when writing or refactoring Swift (SwiftUI/UIKit/AppKit) code to follow MVVM with a small, testable ViewModel. Triggers on: "MVVM", "ViewModel", "ObservableObject", "@Observable", "Observation", "AppKit", "NSViewController", "UIKit", "state management", "dependency injection", "protocol adapters", "refactor view logic", "massive view model", "testable", "async/await", "Combine", "Swift Testing", "#expect".
+description: "Use when writing or refactoring Swift (SwiftUI/UIKit/AppKit) code to follow MVVM with a small, testable ViewModel. Triggers on: MVVM, ViewModel, ObservableObject, @Observable, Observation, AppKit, NSViewController, UIKit, state management, dependency injection, protocol adapters, refactor view logic, massive view model, testable, async/await, Combine, Swift Testing, #expect."
 ---
 
 # Swift MVVM Skill
