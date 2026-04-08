@@ -3,6 +3,7 @@
 When following this architecture, testing becomes straightforward:
 
 ## ViewModels
+
 ```swift
 func testTaskCompletion() async {
     let mockService = MockTaskService()
@@ -15,6 +16,7 @@ func testTaskCompletion() async {
 ```
 
 ## Services
+
 ```swift
 func testTaskValidation() {
     let validator = TaskValidator()
@@ -28,6 +30,7 @@ func testTaskValidation() {
 ```
 
 ## Repositories
+
 ```swift
 func testTaskPersistence() async throws {
     let repository = InMemoryTaskRepository()
@@ -45,6 +48,7 @@ func testTaskPersistence() async throws {
 ## Summary
 
 **Key Takeaways:**
+
 1. **Feature-based organization** - Group by feature, not by type
 2. **Clear separation** - Views, ViewModels, Services, Models have distinct roles
 3. **Protocols for abstraction** - Use when you need flexibility or testability
@@ -52,6 +56,7 @@ func testTaskPersistence() async throws {
 5. **Single responsibility** - Each file/class does one thing well
 
 **When in doubt:**
+
 1. Does it display UI? → View
 2. Does it manage state for a view? → ViewModel
 3. Does it contain business logic? → Service
