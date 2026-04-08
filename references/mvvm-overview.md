@@ -2,17 +2,7 @@
 
 ## Overview
 
-Maestro follows a strict MVVM (Model-View-ViewModel) architecture with clear separation of concerns, adhering to SOLID principles. This guide will help you understand where to place files, how to name them, and how to structure new features.
-
-## Table of Contents
-
-1. [Core Principles](#core-principles)
-2. [Module Structure](#module-structure)
-3. [File Naming Conventions](#file-naming-conventions)
-4. [Where Things Go](#where-things-go)
-5. [Common Patterns](#common-patterns)
-6. [Adding New Features](#adding-new-features)
-7. [Integration Patterns](#integration-patterns)
+MVVM (Model-View-ViewModel) keeps UI, presentation state, and domain work in separate layers, with SOLID-style boundaries so each piece stays small and testable. This guide explains where to put files, how to name them, and how to structure new features around that split.
 
 ---
 

@@ -43,12 +43,14 @@
 ### 1. UI State → ViewModels
 
 **What is UI State:**
+
 - User input (text fields, toggles, selections)
 - Loading/error states for UI feedback
 - Validation states
 - Presentation-specific state (expanded/collapsed, selected tab)
 
 **Where it lives:**
+
 - `@Published` properties in ViewModels
 - `@State` in Views (for truly ephemeral state)
 
@@ -90,6 +92,7 @@ final class CommandBarViewModel: ObservableObject {
 ```
 
 **Why ViewModels hold UI state:**
+
 - ✅ Views observe ViewModels
 - ✅ ViewModels can be tested without UI
 - ✅ Services remain reusable across features
@@ -100,6 +103,7 @@ final class CommandBarViewModel: ObservableObject {
 ### 2. Feature/Domain State → Coordinators
 
 **What is Feature State:**
+
 - Integration connection status
 - Feature configuration/settings
 - Workflow progress
@@ -107,6 +111,7 @@ final class CommandBarViewModel: ObservableObject {
 - Lifecycle state
 
 **Where it lives:**
+
 - Coordinators (often `ObservableObject`)
 - Sometimes in dedicated state managers
 
@@ -140,6 +145,7 @@ final class CalendarIntegrationCoordinator: ObservableObject {
 ```
 
 **Why Coordinators hold feature state:**
+
 - ✅ State outlives individual views
 - ✅ Multiple views/ViewModels can observe same coordinator
 - ✅ Encapsulates feature-level concerns
@@ -150,12 +156,14 @@ final class CalendarIntegrationCoordinator: ObservableObject {
 ### 3. Application State → App-Level Managers/Registries
 
 **What is Application State:**
+
 - Global settings
 - User preferences
 - Available integrations
 - App-wide configuration
 
 **Where it lives:**
+
 - Singleton managers
 - Registries
 - App-level coordinators
@@ -197,17 +205,20 @@ final class IntegrationRegistry: ObservableObject {
 ### 4. Persistent State → Repositories/Storage
 
 **What is Persistent State:**
+
 - User data (automations, tasks, notes)
 - Settings/preferences
 - Cache
 - Historical data
 
 **Where it lives:**
+
 - CoreData / SQLite / JSON files (via Repositories)
 - UserDefaults (for simple settings)
 - Keychain (for secure data)
 
 **How it's accessed:**
+
 - Services call Repositories
 - Repositories abstract the storage mechanism
 - State is loaded into memory (ViewModels/Coordinators) when needed
@@ -272,6 +283,7 @@ final class AutomationsListViewModel: ObservableObject {
 ```
 
 **The flow:**
+
 ```
 User opens AutomationsListView
     ↓
@@ -297,12 +309,14 @@ View re-renders with data
 ### 5. Ephemeral View State → @State in Views
 
 **What is Ephemeral View State:**
+
 - Temporary UI state that doesn't need to persist
 - Animation states
 - Focus states
 - Temporary selections
 
 **Where it lives:**
+
 - `@State` properties directly in SwiftUI Views
 - Does NOT go in ViewModels if it's truly ephemeral
 
@@ -336,6 +350,7 @@ struct AutomationEditorView: View {
 ```
 
 **When to use @State vs ViewModel @Published:**
+
 - Use `@State` if: Only this view cares, doesn't need testing, purely UI concern
 - Use ViewModel `@Published` if: Multiple views need it, affects business logic, needs testing
 
@@ -348,6 +363,7 @@ struct AutomationEditorView: View {
 A service can have **operational state** (internal implementation details) but should NOT have **application state** (data that consumers depend on).
 
 **OK Internal State (Implementation Details):**
+
 ```swift
 final class CalendarService: CalendarServiceProtocol {
     // ✅ OK - Internal operational state
@@ -369,6 +385,7 @@ final class CalendarService: CalendarServiceProtocol {
 ```
 
 **NOT OK Application State:**
+
 ```swift
 final class CalendarService: CalendarServiceProtocol {
     // ❌ BAD - Application state in service
@@ -382,6 +399,7 @@ final class CalendarService: CalendarServiceProtocol {
 ```
 
 **Why this is bad:**
+
 - Multiple consumers might have conflicting needs
 - Service becomes singleton (hard to test)
 - Violates single responsibility (fetching + storing)
@@ -672,6 +690,7 @@ final class CommandBarViewModel: ObservableObject {
 **A:** Yes, but only **internal operational state**, not **application state**.
 
 **OK:**
+
 ```swift
 final class CacheService {
     private var cache: [String: Data] = [:]  // ✅ Internal cache
@@ -683,6 +702,7 @@ final class CacheService {
 ```
 
 **Not OK:**
+
 ```swift
 final class TaskService {
     @Published var tasks: [Task] = []  // ❌ Application state consumers depend on
@@ -727,6 +747,7 @@ final class CalendarIntegrationCoordinator: ObservableObject {
 **A:** Caching is **operational state**, can live in Services or dedicated Cache layer.
 
 **Option 1: Service-level cache**
+
 ```swift
 final class CalendarService {
     private var eventCache: [String: [EKEvent]] = [:]  // ✅ Internal cache
@@ -745,6 +766,7 @@ final class CalendarService {
 ```
 
 **Option 2: Separate cache service**
+
 ```swift
 final class CacheService<T> {
     private var storage: [String: T] = [:]
@@ -775,11 +797,13 @@ Both are fine - the key is that consumers don't directly observe the cache.
 ### Q: What if multiple features need the same data?
 
 **A:** Options:
+
 1. **Shared Coordinator** - Both features inject same coordinator
 2. **Pass data** - One ViewModel loads, passes to another
 3. **Shared State Manager** - Dedicated state manager for that domain
 
 **Example: Shared Coordinator**
+
 ```swift
 // One coordinator, two ViewModels observe it
 @MainActor
@@ -807,14 +831,16 @@ final class SettingsViewModel: ObservableObject {
 
 ### State Lives In:
 
-| State Type | Where It Lives | Example |
-|------------|----------------|---------|
-| **UI State** | ViewModels (`@Published`) | Input text, loading state, validation errors |
-| **Feature State** | Coordinators (`@Published`) | Integration status, workflow progress |
-| **Application State** | Managers/Registries | Available integrations, global settings |
-| **Persistent State** | Repositories → Loaded into ViewModels/Coordinators | User data, preferences |
-| **Ephemeral View State** | Views (`@State`) | Animation states, temporary selections |
-| **Internal Operational State** | Services (private) | Caches, connection pools, initialization flags |
+
+| State Type                     | Where It Lives                                     | Example                                        |
+| ------------------------------ | -------------------------------------------------- | ---------------------------------------------- |
+| **UI State**                   | ViewModels (`@Published`)                          | Input text, loading state, validation errors   |
+| **Feature State**              | Coordinators (`@Published`)                        | Integration status, workflow progress          |
+| **Application State**          | Managers/Registries                                | Available integrations, global settings        |
+| **Persistent State**           | Repositories → Loaded into ViewModels/Coordinators | User data, preferences                         |
+| **Ephemeral View State**       | Views (`@State`)                                   | Animation states, temporary selections         |
+| **Internal Operational State** | Services (private)                                 | Caches, connection pools, initialization flags |
+
 
 ### The Rules:
 
