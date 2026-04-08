@@ -1,6 +1,7 @@
 # File Naming Conventions
 
 ## Views
+
 ```swift
 // SwiftUI Views
 FeatureNameView.swift           // Main view
@@ -12,11 +13,13 @@ FeatureNamePicker.swift         // Picker/selector
 ```
 
 **Examples:**
+
 - `CommandBarView.swift`
 - `AutomationRowView.swift`
 - `NotionConfigurationView.swift`
 
 ## ViewModels
+
 ```swift
 // ViewModels
 FeatureNameViewModel.swift              // Main ViewModel
@@ -26,11 +29,13 @@ FeatureNameEditorViewModel.swift        // For editor views
 ```
 
 **Examples:**
+
 - `CommandBarViewModel.swift`
 - `AutomationsListViewModel.swift`
 - `AutomationEditorViewModel.swift`
 
 ## Models
+
 ```swift
 // Data models
 FeatureName.swift              // Core model
@@ -40,11 +45,13 @@ FeatureNameSnapshot.swift      // Immutable snapshots
 ```
 
 **Examples:**
+
 - `Automation.swift`
 - `AutomationTrigger.swift`
 - `IntegrationStatus.swift`
 
 ## Services
+
 ```swift
 // Services
 FeatureNameService.swift           // General service
@@ -55,11 +62,13 @@ FeatureNameManager.swift           // Resource management
 ```
 
 **Examples:**
+
 - `CalendarService.swift`
 - `AutomationStorageService.swift`
 - `OAuthIntegrationManager.swift`
 
 ## Protocols
+
 ```swift
 // Protocols
 FeatureNameProtocol.swift          // General protocol
@@ -68,6 +77,8 @@ FeatureNameDelegate.swift          // Delegate pattern
 ```
 
 **Examples:**
+
 - `IntegrationCoordinatorProtocol.swift`
 - `ActionHandlerProtocol.swift`
 - `AgentClientProtocol.swift`
+

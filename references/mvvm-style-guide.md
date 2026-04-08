@@ -1,20 +1,25 @@
 # Swift MVVM Style Guide (SwiftUI + UIKit + AppKit)
 
 ## Prime directive
+
 **Keep ViewModels UI-framework agnostic.**
+
 - ViewModel files should not import `SwiftUI`, `UIKit`, or `AppKit`.
 - If you need platform behavior, inject a tiny protocol and implement it in the platform layer.
 
 ## State modeling
+
 Prefer a single `State` struct containing only UI-relevant values, split into nested structs.
 
 ### Typical layout
+
 - `State.ViewState` (loading flags, title, enabled/disabled)
 - `State.ContentState` (rows, selection, empty states)
 - `State.AlertsState` (error, banners, confirmations)
 - Optional: `State.NavigationState` or `State.Route` (pure values, not UI types)
 
 ### Error state
+
 Use a presentable type:
 
 ```swift
@@ -22,7 +27,7 @@ struct ErrorState: Equatable {
   let title: String
   let message: String
 }
-````
+```
 
 ## Intents & actions
 
@@ -45,12 +50,12 @@ Push everything else into smaller units:
 ## Refactor recipe for “massive ViewModel”
 
 1. **Extract pure logic first** into structs/pure functions.
-   - This shrinks the VM and makes logic directly testable.
+  - This shrinks the VM and makes logic directly testable.
 2. **Extract side effects next** into controller/use-case objects.
-   - Keep them behind protocols.
-   - The VM coordinates them and assigns state.
+  - Keep them behind protocols.
+  - The VM coordinates them and assigns state.
 3. Keep the VM as a thin layer:
-   - intents → call pure logic/effects → update state
+  - intents → call pure logic/effects → update state
 
 ## Platform adapters
 
@@ -101,3 +106,4 @@ Prefer Swift Testing for new code. Focus tests on:
 - Putting URLSession/JSONDecoder logic inside a ViewModel
 - ViewModel importing UI frameworks
 - “God” ViewModel that does everything
+

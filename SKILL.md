@@ -69,8 +69,9 @@ struct WorkspaceFileRevealer: FileRevealing {
     NSWorkspace.shared.activateFileViewerSelecting([url])
   }
 }
+```
 
-Any “AppKit-y” or “UIKit-y” behavior inside the ViewModel is a **smell**.
+Any "AppKit-y" or "UIKit-y" behavior inside the ViewModel is a **smell**.
 
 ## Preferred ViewModel shapes
 
@@ -200,8 +201,11 @@ Prefer **Swift Testing** (`import Testing`, `@Test`, `#expect`, `#require`) for 
 Copy/paste from:
 
 - `templates/ObservationViewModel.swift`
+- `templates/SwiftUIObservationView.swift`
 - `templates/CombineViewModel.swift`
+- `templates/SwiftUICombineView.swift`
 - `templates/AppKitViewController.swift`
+- `templates/AppKitRevealer.swift`
 - `templates/ProtocolAdapters.swift`
 - `templates/ServiceUseCaseControllerAndPureLogic.swift`
 - `templates/ViewModelTests.swift` (Swift Testing)
@@ -209,6 +213,7 @@ Copy/paste from:
 ## Additional resources (load only if needed)
 
 - MVVM Overview: [references/mvvm-overview.md](references/mvvm-overview.md)
+- MVVM Style Guide: [references/mvvm-style-guide.md](references/mvvm-style-guide.md)
 - Module Structure: [references/module-structure.md](references/module-structure.md)
 - File Naming Conventions: [references/file-naming-conventions.md](references/file-naming-conventions.md)
 - Where Things Go: [references/where-things-go.md](references/where-things-go.md)

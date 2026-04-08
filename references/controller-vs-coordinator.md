@@ -8,6 +8,7 @@ In modern Swift/iOS development, these terms are often used interchangeably, but
 - **Coordinator**: Specific pattern for managing navigation flow or orchestrating complex workflows
 
 **In Maestro's architecture:**
+
 - **Coordinator**: Manages integration lifecycle, navigation flows, or multi-step workflows
 - **Controller**: Manages access, input handling, or simpler state management
 - Both are types of **services** in the MVVM context
@@ -45,6 +46,7 @@ class TaskViewController: UIViewController {
 ### SwiftUI Era (Coordinators)
 
 SwiftUI doesn't have ViewControllers. The **Coordinator pattern** emerged to:
+
 1. **Separate navigation from views** (since SwiftUI views are structs)
 2. **Manage complex flows** across multiple screens
 3. **Handle side effects** that don't belong in views
@@ -56,12 +58,14 @@ SwiftUI doesn't have ViewControllers. The **Coordinator pattern** emerged to:
 ### Coordinator
 
 **What it means:**
+
 - Orchestrates a workflow or process
 - Coordinates between multiple components
 - Manages state transitions or navigation flow
 - Often has a lifecycle (setup, start, stop, cleanup)
 
 **Characteristics:**
+
 - Usually `ObservableObject` or `@Observable`
 - Often `@MainActor` for UI coordination
 - Has `@Published` properties for state
@@ -69,6 +73,7 @@ SwiftUI doesn't have ViewControllers. The **Coordinator pattern** emerged to:
 - May coordinate multiple services
 
 **When to use "Coordinator":**
+
 - ✅ Managing integration connection/disconnection flow
 - ✅ Orchestrating multi-screen navigation
 - ✅ Coordinating multiple services for a complex workflow
@@ -172,18 +177,21 @@ final class CommandApprovalCoordinator: ObservableObject {
 ### Controller
 
 **What it means:**
+
 - Controls access to a resource
 - Handles input from a source
 - Manages a specific capability
 - Usually more narrowly scoped than coordinator
 
 **Characteristics:**
+
 - May or may not be `ObservableObject`
 - Often manages a single concern
 - Typically simpler than coordinators
 - May be stateless or have minimal state
 
 **When to use "Controller":**
+
 - ✅ Managing access to a system resource (permissions, files)
 - ✅ Handling input from external source (voice, keyboard, gestures)
 - ✅ Controlling a specific capability (escape key handling, hotkeys)
@@ -265,14 +273,16 @@ final class WorkspaceAccessController {
 
 ## Key Differences
 
-| Aspect | Coordinator | Controller |
-|--------|-------------|------------|
-| **Scope** | Broader, orchestrates workflows | Narrower, controls specific resource |
-| **Complexity** | Often complex, multi-step | Usually simpler, focused |
-| **State** | Usually stateful (`ObservableObject`) | May be stateless or minimal state |
-| **Lifecycle** | Has setup/teardown | May not have lifecycle |
-| **Dependencies** | Often coordinates multiple services | Usually wraps single resource/API |
-| **Responsibility** | "How do these pieces work together?" | "How do we access/control this?" |
+
+| Aspect             | Coordinator                           | Controller                           |
+| ------------------ | ------------------------------------- | ------------------------------------ |
+| **Scope**          | Broader, orchestrates workflows       | Narrower, controls specific resource |
+| **Complexity**     | Often complex, multi-step             | Usually simpler, focused             |
+| **State**          | Usually stateful (`ObservableObject`) | May be stateless or minimal state    |
+| **Lifecycle**      | Has setup/teardown                    | May not have lifecycle               |
+| **Dependencies**   | Often coordinates multiple services   | Usually wraps single resource/API    |
+| **Responsibility** | "How do these pieces work together?"  | "How do we access/control this?"     |
+
 
 ---
 
@@ -281,7 +291,7 @@ final class WorkspaceAccessController {
 ### We Use "Coordinator" For:
 
 1. **Integration Lifecycle Management**
-   ```
+  ```
    Integrations/
    ├── Calendar/
    │   └── CalendarIntegrationCoordinator.swift    ✅ Orchestrates connection flow
@@ -289,39 +299,36 @@ final class WorkspaceAccessController {
    │   └── RemindersIntegrationCoordinator.swift   ✅ Orchestrates connection flow
    └── Notion/
        └── NotionIntegrationCoordinator.swift      ✅ Orchestrates OAuth + connection
-   ```
-
+  ```
 2. **Complex Workflows**
-   ```
+  ```
    CommandBar/Services/
    └── CommandApprovalCoordinator.swift            ✅ Orchestrates approval flow
-   ```
-
+  ```
 3. **OAuth Flows** (existing)
-   ```
+  ```
    Services/OAuth/
    └── OAuthCoordinator.swift                      ✅ (Hypothetical, you might have this)
-   ```
+  ```
 
 ### We Use "Controller" For:
 
 1. **Access Management**
-   ```
+  ```
    Settings/ViewModels/
    └── WorkspaceAccessController.swift             ✅ Controls file access
 
    Integrations/Reminders/
    └── RemindersAccessController.swift             ✅ Controls reminder access
-   ```
-
+  ```
 2. **Input Handling**
-   ```
+  ```
    Services/Voice/
    └── VoiceInputController.swift                  ✅ Controls voice input
 
    CommandBar/ViewModels/
    └── CommandBarEscapeController.swift            ✅ Controls escape key
-   ```
+  ```
 
 ---
 
@@ -392,6 +399,7 @@ Does it manage a multi-step workflow or coordinate multiple components?
 Based on the patterns we've established:
 
 ### Use "Coordinator" suffix for:
+
 ```swift
 // Integration lifecycle
 CalendarIntegrationCoordinator.swift
@@ -410,6 +418,7 @@ OAuthCoordinator.swift
 ```
 
 ### Use "Controller" suffix for:
+
 ```swift
 // Access management
 WorkspaceAccessController.swift
@@ -427,6 +436,7 @@ WindowDragController.swift
 ```
 
 ### Use neither (other names) for:
+
 ```swift
 // Data operations
 AutomationStorageService.swift         // Not "StorageCoordinator"
@@ -450,6 +460,7 @@ TokenManager.swift                     // "Manager" for token lifecycle
 ### Example 1: Reminders Access
 
 **Current (Good):**
+
 ```
 Integrations/Reminders/
 ├── RemindersAccessController.swift      ✅ Controls access to reminders
@@ -458,11 +469,13 @@ Integrations/Reminders/
 ```
 
 **Why this works:**
+
 - `Controller` → Simple access checking/requesting
 - `Coordinator` → Orchestrates connection lifecycle
 - `Service` → Actual reminder CRUD operations
 
 **Alternative (Less Clear):**
+
 ```
 Integrations/Reminders/
 └── RemindersCoordinator.swift  # ❌ Unclear: access OR integration OR both?
@@ -473,17 +486,20 @@ Integrations/Reminders/
 ### Example 2: Command Bar Escape Handling
 
 **Current (Good):**
+
 ```
 CommandBar/ViewModels/
 └── CommandBarEscapeController.swift  ✅ Controls escape key behavior
 ```
 
 **Why this works:**
+
 - Simple, focused responsibility
 - Controls how escape key is handled
 - Not coordinating multiple components
 
 **Alternative (Wrong):**
+
 ```
 CommandBar/Services/
 └── CommandBarEscapeCoordinator.swift  # ❌ Overkill, it's not coordinating anything
@@ -494,17 +510,20 @@ CommandBar/Services/
 ### Example 3: Voice Input
 
 **Current (Good):**
+
 ```
 Services/Voice/
 └── VoiceInputController.swift  ✅ Controls voice input start/stop
 ```
 
 **Why this works:**
+
 - Handles input from microphone
 - Controls when recognition starts/stops
 - Simple interface to voice capability
 
 **Alternative (Could Work):**
+
 ```
 Services/Voice/
 └── VoiceInputCoordinator.swift  # ⚠️ Could work if it coordinated voice + transcription + processing
@@ -613,6 +632,7 @@ Search and replace across codebase for the old name.
 ## Summary
 
 ### Use "Coordinator" when:
+
 - 📊 Orchestrating workflows
 - 🔄 Managing state transitions
 - 🎯 Coordinating multiple services
@@ -620,6 +640,7 @@ Search and replace across codebase for the old name.
 - 🔌 Integration lifecycle management
 
 ### Use "Controller" when:
+
 - 🔐 Managing access to resources
 - ⌨️ Handling input from sources
 - 🎮 Controlling specific capabilities
@@ -627,6 +648,7 @@ Search and replace across codebase for the old name.
 - 🚪 Permission/access checking
 
 ### Use other names when:
+
 - 💾 Data operations → **Service**
 - ✅ Validation → **Validator**
 - 🎨 Formatting → **Formatter**
@@ -638,17 +660,19 @@ Search and replace across codebase for the old name.
 
 ## Quick Reference Card
 
-| If it... | Call it... | Example |
-|----------|-----------|---------|
+
+| If it...                            | Call it...  | Example                          |
+| ----------------------------------- | ----------- | -------------------------------- |
 | Manages multi-step integration flow | Coordinator | `CalendarIntegrationCoordinator` |
-| Handles approval workflow | Coordinator | `CommandApprovalCoordinator` |
-| Checks/requests permissions | Controller | `RemindersAccessController` |
-| Handles keyboard/voice input | Controller | `VoiceInputController` |
-| Controls escape key behaviour | Controller | `EscapeController` |
-| Executes business operations | Service | `CalendarService` |
-| Stores/retrieves data | Repository | `AutomationRepository` |
-| Validates data | Validator | `AutomationValidator` |
-| Formats for display | Formatter | `StatusTextFormatter` |
-| Manages shared resource | Manager | `HotKeyManager` |
+| Handles approval workflow           | Coordinator | `CommandApprovalCoordinator`     |
+| Checks/requests permissions         | Controller  | `RemindersAccessController`      |
+| Handles keyboard/voice input        | Controller  | `VoiceInputController`           |
+| Controls escape key behaviour       | Controller  | `EscapeController`               |
+| Executes business operations        | Service     | `CalendarService`                |
+| Stores/retrieves data               | Repository  | `AutomationRepository`           |
+| Validates data                      | Validator   | `AutomationValidator`            |
+| Formats for display                 | Formatter   | `StatusTextFormatter`            |
+| Manages shared resource             | Manager     | `HotKeyManager`                  |
+
 
 **When in doubt:** If it's stateful and orchestrates → Coordinator. If it's focused and controls → Controller. If it just does work → Service.

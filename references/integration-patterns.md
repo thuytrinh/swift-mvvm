@@ -3,6 +3,7 @@
 ## Adding a New Integration (e.g., Slack)
 
 **Step 1: Create integration module**
+
 ```
 Integrations/
 └── Slack/
@@ -12,6 +13,7 @@ Integrations/
 ```
 
 **Step 2: Conform to protocol**
+
 ```swift
 // Integrations/Slack/SlackIntegrationCoordinator.swift
 @MainActor
@@ -27,6 +29,7 @@ final class SlackIntegrationCoordinator: ObservableObject, IntegrationCoordinato
 ```
 
 **Step 3: Register in IntegrationRegistry**
+
 ```swift
 // In app setup
 let slackCoordinator = SlackIntegrationCoordinator(...)
@@ -36,6 +39,7 @@ integrationRegistry.register(slackCoordinator, for: .slack)
 **Step 4: Add AgentBridge handler (if needed by Python agent)**
 
 For OAuth integrations (Python needs token):
+
 ```swift
 // AgentBridge/Handlers/SlackTokenProvider.swift
 final class SlackTokenProvider: TokenProviderProtocol {
@@ -47,6 +51,7 @@ final class SlackTokenProvider: TokenProviderProtocol {
 ```
 
 For native integrations (Swift executes actions):
+
 ```swift
 // AgentBridge/Handlers/SlackActionHandler.swift
 final class SlackActionHandler: ActionHandlerProtocol {
@@ -57,3 +62,4 @@ final class SlackActionHandler: ActionHandlerProtocol {
     }
 }
 ```
+
