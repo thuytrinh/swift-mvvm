@@ -1,14 +1,17 @@
 # Where Things Go
 
 ## Views
+
 **Location:** `FeatureName/Views/`
 
 **What goes here:**
+
 - SwiftUI view structs
 - View-specific components
 - Layout logic only
 
 **What doesn't go here:**
+
 - Business logic → ViewModels
 - Data fetching → Services
 - Formatting → Formatters
@@ -25,33 +28,23 @@ struct AutomationEditorView: View {
         }
     }
 }
-
-// ❌ Bad - View with business logic
-struct AutomationEditorView: View {
-    @State private var name = ""
-
-    var body: some View {
-        Form {
-            TextField("Name", text: $name)
-            Button("Save") {
-                // ❌ Business logic in view
-                validateAndSave()
-            }
-        }
-    }
-}
 ```
 
+See `references/anti-patterns.md` for examples of what not to do.
+
 ## ViewModels
+
 **Location:** `FeatureName/ViewModels/`
 
 **What goes here:**
+
 - `@Published` state properties
 - User interaction handlers
 - Coordination between services
 - Presentation state transformation
 
 **What is a ViewModel:**
+
 - Manages state for a specific view
 - Contains zero UIKit/SwiftUI imports (except `Combine`, `Foundation`)
 - Marked with `@MainActor` for SwiftUI
@@ -87,6 +80,7 @@ final class AutomationEditorViewModel: ObservableObject {
 
 **ViewModel Extensions:**
 When a ViewModel gets large, split into extensions:
+
 ```
 AutomationEditorViewModel.swift              # Core properties and init
 AutomationEditorViewModel+Validation.swift   # Validation logic
@@ -94,6 +88,7 @@ AutomationEditorViewModel+Actions.swift      # Action handlers
 ```
 
 ## Services
+
 **Location:** `FeatureName/Services/` or `Services/FeatureName/`
 
 **What is a Service:**
@@ -102,7 +97,9 @@ A service encapsulates business logic, data operations, or coordinates external 
 **Service Types:**
 
 ### 1. Data Services
+
 Handle CRUD operations, API calls, persistence.
+
 ```swift
 // Example: AutomationStorageService.swift
 protocol AutomationStorageServiceProtocol {
@@ -119,7 +116,9 @@ final class AutomationStorageService: AutomationStorageServiceProtocol {
 ```
 
 ### 2. Business Logic Services
+
 Execute business rules, validation, calculations.
+
 ```swift
 // Example: AutomationValidator.swift
 final class AutomationValidator {
@@ -130,7 +129,9 @@ final class AutomationValidator {
 ```
 
 ### 3. Integration Services
+
 Interact with external systems (APIs, EventKit, etc.).
+
 ```swift
 // Example: CalendarService.swift
 protocol CalendarServiceProtocol {
@@ -145,7 +146,9 @@ final class CalendarService: CalendarServiceProtocol {
 ```
 
 ### 4. Coordinators
+
 Orchestrate complex workflows involving multiple services or state.
+
 ```swift
 // Example: CalendarIntegrationCoordinator.swift
 @MainActor
@@ -161,11 +164,14 @@ final class CalendarIntegrationCoordinator: ObservableObject {
 ```
 
 **What counts as a Coordinator vs Service:**
+
 - **Coordinator**: Manages stateful workflows, integration lifecycle, complex multi-step processes. Often `ObservableObject`.
 - **Service**: Stateless operations, single responsibility, pure business logic. Rarely `ObservableObject`.
 
 ### 5. Managers
+
 Manage resources or singleton concerns.
+
 ```swift
 // Example: HotKeyManager.swift
 final class HotKeyManager {
@@ -176,15 +182,18 @@ final class HotKeyManager {
 ```
 
 ## Models
+
 **Location:** `FeatureName/Models/` or `Shared/Models/`
 
 **What goes here:**
+
 - Data structures (`struct`, `enum`, `class`)
 - No business logic
 - May include computed properties for derived data
 - Conform to `Codable`, `Identifiable`, `Equatable` as needed
 
 **Feature-specific vs Shared:**
+
 - Feature-specific: `Automations/Models/Automation.swift`
 - Shared across features: `Shared/Models/OAuthToken.swift`
 
@@ -216,9 +225,11 @@ struct Automation: Identifiable, Codable {
 ```
 
 ## Formatters
+
 **Location:** `FeatureName/Formatters/` or `Shared/Formatters/`
 
 **What goes here:**
+
 - Presentation logic that transforms data for display
 - No state, pure functions or stateless classes
 - Examples: Date formatting, currency formatting, status text generation
@@ -238,6 +249,7 @@ final class CommandBarStatusTextFormatter {
 ```
 
 ## Repositories
+
 **Location:** `FeatureName/Persistence/`
 
 **What is a Repository:**
@@ -260,13 +272,16 @@ final class AutomationRepository: AutomationRepositoryProtocol {
 ```
 
 **Repository vs Service:**
+
 - **Repository**: Pure data access, knows about storage mechanism
 - **Service**: Business logic, uses repository for data, doesn't know about storage details
 
 ## Protocols
+
 **Location:** `FeatureName/Protocols/` or alongside the implementations in `Services/`
 
 **When to create protocols:**
+
 - ✅ Multiple implementations exist or planned
 - ✅ Need to mock for testing
 - ✅ Dependency Inversion Principle requires abstraction
@@ -293,14 +308,17 @@ final class AutomationValidator {
 ```
 
 ## Utilities
+
 **Location:** `FeatureName/Utilities/` or `Shared/Extensions/`
 
 **What goes here:**
+
 - Helper functions
 - Extensions
 - Small, reusable components
 
 **Feature-specific vs Shared:**
+
 - Feature-specific: `CommandBar/Utilities/WindowPositionCalculator.swift`
 - Shared: `Shared/Extensions/String+Extensions.swift`
 
@@ -310,30 +328,30 @@ final class AutomationValidator {
 
 ### "Where does X go?"
 
-| What | Where | Example |
-|------|-------|---------|
-| SwiftUI View | `FeatureName/Views/` | `CommandBarView.swift` |
-| ViewModel | `FeatureName/ViewModels/` | `CommandBarViewModel.swift` |
-| Data Model | `FeatureName/Models/` or `Shared/Models/` | `Automation.swift` |
-| Business Logic | `FeatureName/Services/` | `AutomationValidator.swift` |
-| Data Access | `FeatureName/Persistence/` | `AutomationRepository.swift` |
-| External Integration | `Integrations/ServiceName/` | `CalendarIntegrationCoordinator.swift` |
-| Formatter | `FeatureName/Formatters/` or `Shared/Formatters/` | `StatusTextFormatter.swift` |
-| Extension | `Shared/Extensions/` | `String+Extensions.swift` |
-| Protocol | `FeatureName/Protocols/` or with implementation | `IntegrationCoordinatorProtocol.swift` |
-| Utility | `FeatureName/Utilities/` or `Shared/Extensions/` | `WindowPositionCalculator.swift` |
+| What                 | Where                                             | Example                                |
+| -------------------- | ------------------------------------------------- | -------------------------------------- |
+| SwiftUI View         | `FeatureName/Views/`                              | `CommandBarView.swift`                 |
+| ViewModel            | `FeatureName/ViewModels/`                         | `CommandBarViewModel.swift`            |
+| Data Model           | `FeatureName/Models/` or `Shared/Models/`         | `Automation.swift`                     |
+| Business Logic       | `FeatureName/Services/`                           | `AutomationValidator.swift`            |
+| Data Access          | `FeatureName/Persistence/`                        | `AutomationRepository.swift`           |
+| External Integration | `Integrations/ServiceName/`                       | `CalendarIntegrationCoordinator.swift` |
+| Formatter            | `FeatureName/Formatters/` or `Shared/Formatters/` | `StatusTextFormatter.swift`            |
+| Extension            | `Shared/Extensions/`                              | `String+Extensions.swift`              |
+| Protocol             | `FeatureName/Protocols/` or with implementation   | `IntegrationCoordinatorProtocol.swift` |
+| Utility              | `FeatureName/Utilities/` or `Shared/Extensions/`  | `WindowPositionCalculator.swift`       |
 
 ### "What is X?"
 
-| Term | Definition | Characteristics |
-|------|------------|-----------------|
-| **View** | SwiftUI UI component | No business logic, observes ViewModel |
-| **ViewModel** | State + presentation logic | `@MainActor`, `ObservableObject`, uses services |
-| **Model** | Data structure | `struct`/`enum`, `Codable`, no logic |
-| **Service** | Business logic | Stateless, single responsibility |
-| **Coordinator** | Workflow orchestration | Stateful, manages complex flows, often `ObservableObject` |
-| **Repository** | Data access layer | Abstracts storage (CoreData, SQLite, etc.) |
-| **Formatter** | Presentation transformation | Pure functions, data → display format |
-| **Manager** | Resource management | Often singleton, manages shared resources |
-| **Handler** | Request/response handling | Processes incoming requests (AgentBridge) |
-| **Provider** | Supplies resources | Provides tokens, configuration, etc. |
+| Term            | Definition                  | Characteristics                                           |
+| --------------- | --------------------------- | --------------------------------------------------------- |
+| **View**        | SwiftUI UI component        | No business logic, observes ViewModel                     |
+| **ViewModel**   | State + presentation logic  | `@MainActor`, `ObservableObject`, uses services           |
+| **Model**       | Data structure              | `struct`/`enum`, `Codable`, no logic                      |
+| **Service**     | Business logic              | Stateless, single responsibility                          |
+| **Coordinator** | Workflow orchestration      | Stateful, manages complex flows, often `ObservableObject` |
+| **Repository**  | Data access layer           | Abstracts storage (CoreData, SQLite, etc.)                |
+| **Formatter**   | Presentation transformation | Pure functions, data → display format                     |
+| **Manager**     | Resource management         | Often singleton, manages shared resources                 |
+| **Handler**     | Request/response handling   | Processes incoming requests (AgentBridge)                 |
+| **Provider**    | Supplies resources          | Provides tokens, configuration, etc.                      |
