@@ -25,12 +25,15 @@ The skill is structured as a single entry point (`SKILL.md`) with lazy reference
 - ViewModels must **not** import `SwiftUI`, `UIKit`, or `AppKit`
 - Platform actions go through tiny **protocol adapters** defined in Foundation-only files
 - State lives in a nested `State` struct (not 30 loose `@Published` vars)
-- Extraction priority: **pure logic first → side-effect controllers → ViewModel as thin state+intents**
+- Extraction priority: **pure logic first → side-effect services/controllers → ViewModel as thin state+intents**
+- Business layer uses **Service** (not UseCase) for business rule components
+- Layers should be skipped when they would be pass-throughs (not every screen needs every layer)
 - New tests use **Swift Testing** (`import Testing`, `@Test`, `#expect`)
 
 ## How to install the skill
 
 Copy `SKILL.md` plus optional `references/` and `templates/` to:
+
 - Claude Code (project): `.claude/skills/swift-mvvm/`
 - Claude Code (user): `~/.claude/skills/swift-mvvm/`
 - Codex (project): `.codex/skills/swift-mvvm/`
@@ -42,3 +45,4 @@ Copy `SKILL.md` plus optional `references/` and `templates/` to:
 - **`references/`** files are loaded lazily; they can be more detailed.
 - **`templates/`** files must be valid Swift. Keep them minimal and illustrative.
 - When adding a new reference or template, add a pointer to it in the relevant section of `SKILL.md`.
+- `references/services-vs-feature-services.md` uses "use case" in the generic English sense (meaning "second consumer") — do not rename these to "Service".
