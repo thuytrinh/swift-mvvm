@@ -45,17 +45,22 @@ Best practice is to make a ViewModel mostly:
 Push everything else into smaller units:
 
 - Pure logic: `RowBuilder`, `Reducer`, `Validator`, `Sorter`, `Formatter`
-- Side effects: `UseCase`, `Controller`, `Repository`
+- Side effects: `Service`, `Controller`, `Repository`
 
 ## Refactor recipe for “massive ViewModel”
 
 1. **Extract pure logic first** into structs/pure functions.
-  - This shrinks the VM and makes logic directly testable.
-2. **Extract side effects next** into controller/use-case objects.
-  - Keep them behind protocols.
-  - The VM coordinates them and assigns state.
+
+- This shrinks the VM and makes logic directly testable.
+
+2. **Extract side effects next** into controller/service objects.
+
+- Keep them behind protocols.
+- The VM coordinates them and assigns state.
+
 3. Keep the VM as a thin layer:
-  - intents → call pure logic/effects → update state
+
+- intents → call pure logic/effects → update state
 
 ## Platform adapters
 
@@ -96,7 +101,7 @@ Prefer Swift Testing for new code. Focus tests on:
 - pure logic units (row building, reducers, sorting)
 - state transitions (loading → success / error)
 - cancellation behavior
-- intent forwarding (didTapX calls controller/use case)
+- intent forwarding (didTapX calls controller/service)
 
 ## Common pitfalls
 
@@ -106,4 +111,3 @@ Prefer Swift Testing for new code. Focus tests on:
 - Putting URLSession/JSONDecoder logic inside a ViewModel
 - ViewModel importing UI frameworks
 - “God” ViewModel that does everything
-

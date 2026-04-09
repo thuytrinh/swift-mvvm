@@ -11,7 +11,7 @@ Help the agent produce **better MVVM code** for Swift projects.
 
 - **Keep the ViewModel UI-framework agnostic.** ViewModels should **not** import `SwiftUI`, `UIKit`, or `AppKit`.
 - The ViewModel should be mostly **(1) state**, **(2) intent methods**, and **(3) dependency coordination**.
-- Push work into **smaller, testable units** (pure structs/functions, use cases, controllers, repositories, mappers, formatters).
+- Push work into **smaller, testable units** (pure structs/functions, services, controllers, repositories, mappers, formatters).
 - Use **dependency injection** with protocols so everything is mockable.
 - **Extensions are encouraged** for organization (especially protocol conformances).
 
@@ -110,10 +110,22 @@ struct State: Equatable {
 ## Refactoring a massive ViewModel (priority order)
 
 1. **Extract pure logic first** — non-IO computations into pure structs/functions (filtering, sorting, formatting, validation).
-2. **Extract side effects next** — IO/orchestration units behind protocols (`UseCase`, `Controller`, `Repository`).
+2. **Extract side effects next** — IO/orchestration units behind protocols (`Service`, `Controller`, `Repository`). **Skip layers that would be pass-throughs.**
 3. **Leave the VM as state + intents** — forwards intents to extracted units, assigns state.
 
 See `references/mvvm-style-guide.md` for the full recipe with examples.
+
+## Skip layers that are pass-throughs
+
+Not every screen needs every layer. Only add a layer when it has real logic:
+
+| Situation                                               | ViewModel talks to                         |
+| ------------------------------------------------------- | ------------------------------------------ |
+| Simple fetch, no business logic                         | Repository directly                        |
+| Fetch + business rules (filtering, validation, merging) | Service (which uses Repository)            |
+| Multiple side effects to orchestrate                    | Controller (which uses Service/Repository) |
+
+Introduce a Service or Controller when the logic justifies it, not upfront.
 
 ## Concurrency & cancellation rules
 
@@ -137,7 +149,7 @@ See `references/mvvm-style-guide.md` for the full recipe with examples.
 - Dependencies are protocols; provide a production implementation and a mock/fake for tests.
 - Prefer injecting **small units**:
   - Pure logic: `RowBuilder`, `Validator`, `Reducer`
-  - Effects: `UseCase`, `Controller`, `Repository`
+  - Effects: `Service`, `Controller`, `Repository`
   - Platform adapters: `FileRevealing`, `URLOpening`, etc.
 
 ## Avoid massive ViewModels
@@ -160,7 +172,7 @@ When writing/refactoring:
 - Provide code in **diff-friendly chunks**, grouped by file.
 - Prefer small, composable functions.
 - Use extensions for organization (e.g., protocol conformances, grouping helpers).
-- Name clearly: `FooViewModel`, `FooState`, `FooUseCase`, `FooRepository`, `FooController`, `FooRowBuilder`.
+- Name clearly: `FooViewModel`, `FooState`, `FooService`, `FooRepository`, `FooController`, `FooRowBuilder`.
 - Add tests for ViewModel state transitions and extracted pure logic.
 
 ## Testing guidance
@@ -181,7 +193,7 @@ Copy/paste from:
 - `templates/AppKitViewController.swift`
 - `templates/AppKitRevealer.swift`
 - `templates/ProtocolAdapters.swift`
-- `templates/ServiceUseCaseControllerAndPureLogic.swift`
+- `templates/BusinessLayer.swift`
 - `templates/ViewModelTests.swift` (Swift Testing)
 
 ## Additional resources (load only if needed)

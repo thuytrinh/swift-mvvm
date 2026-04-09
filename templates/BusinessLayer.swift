@@ -15,21 +15,12 @@ protocol ExampleRepository {
   func fetchModels() async throws -> [ExampleModel]
 }
 
-// MARK: - Use case (business rule)
-
-protocol LoadExamplesUseCase {
-  func load() async throws -> [ExampleModel]
-}
-
-struct LoadExamplesUseCaseLive: LoadExamplesUseCase {
-  let repository: ExampleRepository
-
-  func load() async throws -> [ExampleModel] {
-    try await repository.fetchModels()
-  }
-}
-
-// MARK: - Side-effects controller (orchestrates multiple effects)
+// MARK: - Controller (orchestrates multiple effects)
+//
+// The controller talks to the repository directly here because there is no
+// business logic worth a separate Service layer.  Introduce a Service when
+// the layer would contain real rules (filtering by permissions, merging
+// multiple repositories, validation, etc.).
 
 protocol ExamplesControlling {
   func loadExamples() async throws -> [ExampleModel]
@@ -41,11 +32,11 @@ protocol AnalyticsTracking {
 }
 
 struct ExamplesController: ExamplesControlling {
-  let loadUseCase: LoadExamplesUseCase
+  let repository: ExampleRepository
   let analytics: AnalyticsTracking
 
   func loadExamples() async throws -> [ExampleModel] {
-    try await loadUseCase.load()
+    try await repository.fetchModels()
   }
 
   func trackOpenedExamplesScreen() {
