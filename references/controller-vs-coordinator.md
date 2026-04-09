@@ -7,7 +7,7 @@ In modern Swift/iOS development, these terms are often used interchangeably, but
 - **Controller**: Broad term, can mean many things (legacy UIKit pattern, access control, input handling)
 - **Coordinator**: Specific pattern for managing navigation flow or orchestrating complex workflows
 
-**In Maestro's architecture:**
+**In this architecture:**
 
 - **Coordinator**: Manages integration lifecycle, navigation flows, or multi-step workflows
 - **Controller**: Manages access, input handling, or simpler state management
@@ -286,7 +286,7 @@ final class WorkspaceAccessController {
 
 ---
 
-## In Maestro's Codebase
+## In This Codebase
 
 ### We Use "Coordinator" For:
 
@@ -394,7 +394,7 @@ Does it manage a multi-step workflow or coordinate multiple components?
 
 ---
 
-## Naming Conventions in Maestro
+## Naming Conventions
 
 Based on the patterns we've established:
 
@@ -455,7 +455,7 @@ TokenManager.swift                     // "Manager" for token lifecycle
 
 ---
 
-## Real-World Examples from Maestro
+## Real-World Examples
 
 ### Example 1: Reminders Access
 
