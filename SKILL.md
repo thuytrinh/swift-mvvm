@@ -8,6 +8,7 @@ description: "Use when writing or refactoring Swift (SwiftUI/UIKit/AppKit) code 
 Help the agent produce **better MVVM code** for Swift projects.
 
 ## Core stance
+
 - **Keep the ViewModel UI-framework agnostic.** ViewModels should **not** import `SwiftUI`, `UIKit`, or `AppKit`.
 - The ViewModel should be mostly **(1) state**, **(2) intent methods**, and **(3) dependency coordination**.
 - Push work into **smaller, testable units** (pure structs/functions, use cases, controllers, repositories, mappers, formatters).
@@ -15,7 +16,9 @@ Help the agent produce **better MVVM code** for Swift projects.
 - **Extensions are encouraged** for organization (especially protocol conformances).
 
 ## When to use
+
 Use this skill when the user asks to:
+
 - Add or refactor features in SwiftUI/UIKit/AppKit and keep architecture clean.
 - Create or improve a ViewModel (state, intents, effects) and move logic out of Views/ViewControllers.
 - Fix state-management issues (wrong wrappers, threading warnings, unstable bindings).
@@ -23,6 +26,7 @@ Use this skill when the user asks to:
 - Reduce a “massive ViewModel” by splitting concerns.
 
 ## First check (before writing code)
+
 1. Identify UI tech: **SwiftUI**, **UIKit**, or **AppKit**.
 2. Identify deployment target:
    - If **iOS 17+/macOS 14+** is available, prefer **Observation** (`@Observable`).
@@ -30,48 +34,35 @@ Use this skill when the user asks to:
 3. Match existing project style (naming, folders, DI approach, networking layer).
 
 ## MVVM responsibilities
+
 ### View layer
+
 SwiftUI `View` / UIKit `UIViewController` / AppKit `NSViewController`:
+
 - Declares layout and binds to **state**.
 - Sends **user intents** (tap, selection, text changes) to the ViewModel.
 - Owns UI-only concerns (navigation, presenting alerts, AppKit panels, first responder, etc.).
 
 ### ViewModel
+
 - Owns **screen state** (loading/data/error, derived UI values).
 - Coordinates effects through injected dependencies.
 - Exposes **intent methods** (`onAppear()`, `refresh()`, `didTap…`) rather than views calling random internals.
 
 ### Domain / Services
+
 - Encapsulate fetching, caching, persistence, decoding, validation.
 - Must be independent of UI frameworks.
 
 ## Hard rule: No UI framework imports in ViewModels
+
 **ViewModels should not import:**
+
 - `SwiftUI`
 - `UIKit`
 - `AppKit`
 
-If a ViewModel needs a platform behavior, define a tiny protocol in a non-UI module (Foundation-only), and provide a platform implementation in the View layer (or platform adapter module).
-
-Example:
-
-```swift
-// In a Foundation-only target / file.
-protocol FileRevealing {
-  func reveal(_ url: URL)
-}
-
-// In AppKit layer.
-import AppKit
-
-struct WorkspaceFileRevealer: FileRevealing {
-  func reveal(_ url: URL) {
-    NSWorkspace.shared.activateFileViewerSelecting([url])
-  }
-}
-```
-
-Any "AppKit-y" or "UIKit-y" behavior inside the ViewModel is a **smell**.
+If a ViewModel needs a platform behavior, define a tiny protocol in a Foundation-only file and provide a platform implementation in the View layer. See `templates/ProtocolAdapters.swift` or `references/mvvm-style-guide.md` for a concrete example.
 
 ## Preferred ViewModel shapes
 
@@ -118,22 +109,11 @@ struct State: Equatable {
 
 ## Refactoring a massive ViewModel (priority order)
 
-When reducing a large VM, refactor in this order:
+1. **Extract pure logic first** — non-IO computations into pure structs/functions (filtering, sorting, formatting, validation).
+2. **Extract side effects next** — IO/orchestration units behind protocols (`UseCase`, `Controller`, `Repository`).
+3. **Leave the VM as state + intents** — forwards intents to extracted units, assigns state.
 
-1. **Extract pure logic first**
-
-- Move non-IO computations into **pure structs** or **pure functions**.
-- Examples: filtering, sorting, mapping domain models to row models, formatting, validation, state reducers.
-
-2. **Extract side effects into controllers (still testable)**
-
-- Create small “effect” units that do IO and orchestration.
-- Keep them behind protocols and inject into the VM.
-- Examples: `LoadExamplesUseCase`, `ExamplesController`, `AnalyticsTracking`, `FileRevealing`.
-
-3. **Leave the VM as state + intents**
-
-- VMs forward intents to pure logic/effect units and assign state.
+See `references/mvvm-style-guide.md` for the full recipe with examples.
 
 ## Concurrency & cancellation rules
 
@@ -171,13 +151,7 @@ Smells:
 - Formats everything inline with complex logic.
 - Handles navigation, analytics, networking, caching all together.
 
-Refactor moves:
-
-- Extract a pure `RowBuilder` or `Reducer`.
-- Extract a `UseCase` for business rules.
-- Extract a `Repository` for IO.
-- Extract a side-effects `Controller` to orchestrate multiple services.
-- Extract platform adapters (tiny protocols) for UI actions.
+See the refactoring priority above and `references/anti-patterns.md` for code examples.
 
 ## Output expectations
 
