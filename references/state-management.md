@@ -407,7 +407,7 @@ final class CalendarService: CalendarServiceProtocol {
 
 ---
 
-## Real-World Examples from Maestro
+## Real-World Examples
 
 ### Example 1: Calendar Integration
 

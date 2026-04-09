@@ -94,8 +94,8 @@ These are foundational services used by multiple parts of the app.
 - ✅ Bundled with CalendarIntegrationCoordinator
 - ✅ Self-contained module
 
-**Actual Decision for Maestro:**
-We chose **Option B** (`/Integrations/Calendar/`) because:
+**Decision:**
+Option B (`/Integrations/Calendar/`) is preferred because:
 
 1. Calendar is an integration with connection state
 2. Everything related to Calendar is in one place
